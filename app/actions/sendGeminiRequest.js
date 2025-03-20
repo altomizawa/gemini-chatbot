@@ -13,7 +13,7 @@ export async function sendGeminiRequest({message}) {
     if (response.ok) {
       const data = await response.json();
       console.log('Gemini response:', data);
-      return data;
+      return data.output;
     } else {
       throw new Error('Failed to send Gemini request');
     }

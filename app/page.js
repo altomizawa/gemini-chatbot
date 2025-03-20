@@ -23,11 +23,13 @@ export default function Home() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (currentInput.trim() === '') return; // Prevent sending empty messages
-    sendGeminiRequest({message: currentInput});
+    setMessages([...messages, { role: 'user', content: currentInput, time: currentTime()}]); // Add the user message to the chat
 
-    // setMessages([...messages, { role: 'user', content: currentInput, time: currentTime()}]);
+    const response = await sendGeminiRequest({message: currentInput}); // Send the user message to the API
+    setMessages([...messages, { role: 'coach', content: response, time: currentTime()}]); // Add the API response to the chat
+
     setCurrentInput(''); // Clear the input field after sending
-    
+
   }
 
   const handleInput = (e) => {
@@ -44,7 +46,7 @@ export default function Home() {
         <div className="flex flex-col items-center gap-4 border-[1px] rounded-lg border-gray-400 w-[90%] md:w-2/3 h-[400px] mx-auto p-8 overflow-y-auto">
           {messages.map((message, index) => (
             <div key={index} className={`self-${message.role === 'user' ? 'end' : 'start'}`}>
-              <p className={`text-left px-4 py-2 rounded-full ${message.role === 'user' ? 'bg-blue-200' : 'bg-green-300'}`}>
+              <p className={`max-w-2/3 text-left px-4 py-2 rounded-lg ${message.role === 'user' ? 'bg-blue-200' : 'bg-green-300'}`}>
                 {message.content}
               </p>
               <p className='text-xs px-4 py-2 rounded-full self-end text-right'>{message.time}</p> {/* You might want to add actual timestamps here */}
